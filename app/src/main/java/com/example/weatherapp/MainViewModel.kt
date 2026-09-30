@@ -14,7 +14,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun add(name: String) {
-        _cities.add(City(name = name))
+        // A ListPage usa o nome como key do LazyColumn: nomes repetidos derrubam o app.
+        if (_cities.none { it.name == name }) {
+            _cities.add(City(name = name))
+        }
     }
 }
 
