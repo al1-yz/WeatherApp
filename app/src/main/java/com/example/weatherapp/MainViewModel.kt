@@ -17,6 +17,7 @@ import com.example.weatherapp.db.fb.toFBCity
 import com.example.weatherapp.model.City
 import com.example.weatherapp.model.User
 import com.example.weatherapp.model.Weather
+import com.example.weatherapp.ui.nav.Route
 import com.google.android.gms.maps.model.LatLng
 
 class MainViewModel (private val db: FBDatabase,
@@ -30,6 +31,12 @@ class MainViewModel (private val db: FBDatabase,
     private val _weather = mutableStateMapOf<String, Weather>()
 
     private val _forecast = mutableStateMapOf<String, List<Forecast>?>()
+
+    // Página atual; a MainActivity navega sempre que este valor muda
+    private var _page = mutableStateOf<Route>(Route.Home)
+    var page: Route
+        get() = _page.value
+        set(tmp) { _page.value = tmp }
 
     // Cidade selecionada na lista, cuja previsão aparece na HomePage
     private var _city = mutableStateOf<String?>(null)
