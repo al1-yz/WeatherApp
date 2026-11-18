@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.api.WeatherService
+import com.example.weatherapp.api.toForecast
 import com.example.weatherapp.api.toWeather
+import com.example.weatherapp.model.Forecast
 import com.example.weatherapp.db.fb.FBCity
 import com.example.weatherapp.db.fb.FBDatabase
 import com.example.weatherapp.db.fb.FBUser
@@ -26,6 +28,14 @@ class MainViewModel (private val db: FBDatabase,
     }
 
     private val _weather = mutableStateMapOf<String, Weather>()
+
+    private val _forecast = mutableStateMapOf<String, List<Forecast>?>()
+
+    // Cidade selecionada na lista, cuja previsão aparece na HomePage
+    private var _city = mutableStateOf<String?>(null)
+    var city: String?
+        get() = _city.value
+        set(tmp) { _city.value = tmp }
 
     private val _user = mutableStateOf<User?> (null)
     val user : User?
@@ -79,6 +89,19 @@ class MainViewModel (private val db: FBDatabase,
     fun weather (name: String) = _weather.getOrPut(name) {
         loadWeather(name)
         Weather.LOADING // retorno
+    }
+
+    fun forecast (name: String) = _forecast.getOrPut(name) {
+        loadForecast(name)
+        emptyList() // return
+    }
+
+    private fun loadForecast(name: String) {
+        service.getForecast(name) { apiForecast ->
+            apiForecast?.let {
+                _forecast[name] = apiForecast.toForecast()
+            }
+        }
     }
 
     private fun loadWeather(name: String) {
