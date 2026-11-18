@@ -3,6 +3,7 @@ package com.example.weatherapp
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.model.City
+import com.google.android.gms.maps.model.LatLng
 
 class MainViewModel : ViewModel() {
     private val _cities = getCities().toMutableStateList()
@@ -13,10 +14,10 @@ class MainViewModel : ViewModel() {
         _cities.remove(city)
     }
 
-    fun add(name: String) {
+    fun add(name: String, location: LatLng? = null) {
         // A ListPage usa o nome como key do LazyColumn: nomes repetidos derrubam o app.
         if (_cities.none { it.name == name }) {
-            _cities.add(City(name = name))
+            _cities.add(City(name = name, location = location))
         }
     }
 }
