@@ -7,26 +7,30 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun CityDialog(onDismiss: () -> Unit, onConfirm: (city: String) -> Unit) {
-    val cityName = remember { mutableStateOf("") }
+fun CityDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (city: String) -> Unit,
+    viewModel: CityDialogViewModel) {
 
     Dialog(onDismissRequest = { onDismiss() } ) {
         Surface( shape = RoundedCornerShape(16.dp) ) {
@@ -45,11 +49,33 @@ fun CityDialog(onDismiss: () -> Unit, onConfirm: (city: String) -> Unit) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = "Nome da cidade") },
-                    value = cityName.value,
-                    onValueChange = { cityName.value = it })
+                    value = viewModel.query,
+                    onValueChange = {
+                        viewModel.onQueryChanged(it)
+                    })
+                Spacer(modifier = Modifier.height(12.dp))
+                if (viewModel.query.length < 3) {
+                    Text(text = "Digite pelo menos 3 letras do nome de uma cidade")
+                } else if (viewModel.suggestions.isEmpty()) {
+                    Text(text = "Nenhuma cidade encontrada")
+                } else {
+                    // Altura máxima para o botão OK continuar visível com muitas sugestões
+                    LazyColumn(modifier = Modifier.heightIn(max = 250.dp)) {
+                        items(viewModel.suggestions) { city ->
+                            ListItem(
+                                headlineContent = { Text(city.name!!) },
+                                supportingContent = {
+                                    Text(listOfNotNull(city.region, city.country)
+                                        .filter { it.isNotBlank() }.joinToString(", "))
+                                },
+                                modifier = Modifier.clickable { onConfirm(city.name!!) }
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { onConfirm(cityName.value) },
+                    onClick = { onConfirm(viewModel.query) },
                     modifier = Modifier.fillMaxWidth().height(50.dp)
                 ) { Text(text = "OK") }
             }

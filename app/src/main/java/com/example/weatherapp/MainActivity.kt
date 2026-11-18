@@ -30,6 +30,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherapp.ui.CityDialog
+import com.example.weatherapp.ui.CityDialogViewModel
+import com.example.weatherapp.ui.CityDialogViewModelFactory
 import com.example.weatherapp.ui.nav.BottomNavBar
 import com.example.weatherapp.ui.nav.BottomNavItem
 import com.example.weatherapp.ui.nav.MainNavHost
@@ -50,6 +52,9 @@ class MainActivity : ComponentActivity() {
             val viewModel : MainViewModel = viewModel(
                 factory = MainViewModelFactory(fbDB, weatherService)
             )
+            val cityDialogViewModel : CityDialogViewModel = viewModel(
+                factory = CityDialogViewModelFactory(weatherService)
+            )
             var showDialog by remember { mutableStateOf(false) }
             val currentRoute = navController.currentBackStackEntryAsState()
             val showButton = currentRoute.value?.destination
@@ -62,7 +67,8 @@ class MainActivity : ComponentActivity() {
                     onConfirm = { city ->
                         if (city.isNotBlank()) viewModel.addCity(city)
                         showDialog = false
-                    })
+                    },
+                    viewModel = cityDialogViewModel)
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -90,7 +96,11 @@ class MainActivity : ComponentActivity() {
                     },
                     floatingActionButton = {
                         if (showButton) {
-                            FloatingActionButton(onClick = { showDialog = true }) {
+                            FloatingActionButton(onClick = {
+                                // Limpa a consulta anterior antes de abrir o diálogo
+                                cityDialogViewModel.onQueryChanged("")
+                                showDialog = true
+                            }) {
                                 Icon(Icons.Default.Add, contentDescription = "Adicionar")
                             }
                         }
