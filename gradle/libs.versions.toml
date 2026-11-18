@@ -17,6 +17,7 @@ mapsCompose = "9.0.0"
 firebaseAuth = "25.0.0"
 firebaseFirestore = "27.2.0"
 retrofit = "3.0.0"
+coilCompose = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
