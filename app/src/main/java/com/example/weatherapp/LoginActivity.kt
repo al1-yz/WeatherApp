@@ -59,7 +59,10 @@ fun LoginPage(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally
     ) {
-        val modifier = modifier.fillMaxWidth(fraction = 0.9f)
+        // Modifier novo: o "modifier" recebido já tem o padding da Scaffold e, se reaproveitado,
+        // repete esse padding em cada campo, Spacer e Row (em celulares com barras maiores os
+        // botões ficavam espremidos e o "Registrar" saía da tela).
+        val modifier = Modifier.fillMaxWidth(fraction = 0.9f)
         Text(
             text = "Bem-vindo/a!",
             fontSize = 24.sp
