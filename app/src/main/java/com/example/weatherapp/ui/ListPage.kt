@@ -2,7 +2,6 @@ package com.example.weatherapp.ui
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,14 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherapp.MainViewModel
 import com.example.weatherapp.model.City
+import com.example.weatherapp.model.Weather
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -49,7 +52,7 @@ fun CityItem(
                 text = city.name,
                 fontSize = 24.sp)
             Text(modifier = Modifier,
-                text = city.weather?:"Carregando clima...",
+                text = desc,
                 fontSize = 16.sp)
         }
         IconButton(onClick = onClose) {
@@ -64,15 +67,15 @@ fun ListPage(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
+    val activity = LocalContext.current as? Activity
     val cityList = viewModel.cities
-    val activity = LocalActivity.current as Activity // Para os Toasts
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        items(cityList, key = { it.name }) { city ->
-            CityItem(city = city, onClose = {
+        items(items = cityList, key = { it.name }) { city ->
+            CityItem(city = city, weather = viewModel.weather(city.name), onClose = {
                 viewModel.remove(city)
             }, onClick = {
                 Toast.makeText(activity, "Cidade: ${city.name}", Toast.LENGTH_SHORT).show()
