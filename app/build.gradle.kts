@@ -5,6 +5,8 @@ plugins {
 
     // Deve vir depois dos outros plugins (Bug)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    // Pratica 5: Firebase (lê o app/google-services.json)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -44,6 +46,9 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
     implementation(libs.maps.compose)
+
+    // Pratica 5: Firebase Authentication
+    implementation(libs.firebase.auth)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
