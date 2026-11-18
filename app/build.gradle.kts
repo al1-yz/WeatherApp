@@ -50,6 +50,9 @@ dependencies {
     // Pratica 5: Firebase Authentication
     implementation(libs.firebase.auth)
 
+    // Pratica 6: Firebase Firestore
+    implementation(libs.firebase.firestore)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
