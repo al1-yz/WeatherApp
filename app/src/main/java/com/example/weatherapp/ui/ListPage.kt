@@ -31,7 +31,7 @@ import com.example.weatherapp.R
 import com.example.weatherapp.model.City
 import com.example.weatherapp.model.Weather
 import com.example.weatherapp.ui.nav.Route
-import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.LocalActivity
 
 @Composable
 fun CityItem(
@@ -73,7 +73,9 @@ fun ListPage(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {
-    val activity = LocalContext.current as? Activity
+    // O PDF usa LocalContext.current as? Activity; o lint acusa erro (ContextCastToActivity)
+    // e recomenda LocalActivity, que usamos desde a Prática 1.
+    val activity = LocalActivity.current
     val cityList = viewModel.cities
     LazyColumn(
         modifier = modifier

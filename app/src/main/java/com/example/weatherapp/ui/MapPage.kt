@@ -61,7 +61,10 @@ fun MapPage(
                         .fromBitmap(image.scale(120,120))
                     val desc = if (weather == Weather.LOADING)
                         "Carregando clima..." else weather.desc
-                    Marker( state = MarkerState(position = it.location!!),
+                    // O PDF cria o MarkerState sem remember; o lint acusa erro
+                    // (UnrememberedMutableState). Dentro do key(it.name) é seguro lembrar.
+                    val marker = remember { MarkerState(position = it.location!!) }
+                    Marker( state = marker,
                         icon = icon, title = it.name, snippet = desc)
                 }
             }
